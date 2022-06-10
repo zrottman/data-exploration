@@ -2,12 +2,15 @@
 Helper functions to manage water data.
 """
 
-def add_data_point(meter=None, event=None, date=None):
+def add_data_point(meter=None, event=None, zone1='', zone2='', zone3='', zone4='', date=None):
     """
-    Adds datapoints to the csv files storing water data and event data. If
-    meter reading is given, function will write to ../data/water.csv; if event
-    is given, function will write to ../data/water-events.csv; if both are given,
-    function will write to both files.
+    Adds datapoints to the csv files storing water data, event data, and irrigation
+    data.
+
+    If meter reading is given, function will write to ../data/water.csv; if event
+    is given, function will write to ../data/water-events.csv; if irrigation zone
+    data are given, function will write to ../data/water-irrigation.csv. If any
+    combination of these are given, function will write to all relevant files.
 
     If no date is given, the function will automatically use today's date.
     """
@@ -35,3 +38,9 @@ def add_data_point(meter=None, event=None, date=None):
         f = open(filename, 'a')
         f.write("\n{0},{1}".format(date, event))
         f.close()
+
+    # Check for zone parameters and write to file
+    if zone1 or zone2 or zone3 or zone4:
+        filename = '../data/water-irrigation.csv'
+        f = open(filename, 'a')
+        f.write("\n{0},{1},{2},{3},{4}".format(date, zone1, zone2, zone3, zone4))
