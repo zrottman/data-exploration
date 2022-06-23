@@ -29,18 +29,18 @@ def add_data_point(meter=None, event=None, zone1='', zone2='', zone3='', zone4='
     if meter:
         filename = '../data/water.csv'
         f = open(filename, 'a')
-        f.write("\n{0},{1}".format(date, meter))
+        f.write("{0},{1}".format(date, meter))
         f.close()
 
     # Check for event parameter and write to file
     if event:
         filename = '../data/water-events.csv'
         f = open(filename, 'a')
-        f.write("\n{0},{1}".format(date, event))
+        f.write("{0},{1}".format(date, event))
         f.close()
 
     # Check for zone parameters and write to file
     if zone1 or zone2 or zone3 or zone4:
         filename = '../data/water-irrigation.csv'
         f = open(filename, 'a')
-        f.write("\n{0},{1},{2},{3},{4}".format(date, zone1, zone2, zone3, zone4))
+        f.write("{0},{1},{2},{3},{4}".format(date, zone1, zone2, zone3, zone4))
