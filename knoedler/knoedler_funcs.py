@@ -63,6 +63,7 @@ def load_knoedler_curr_conversion_dataset():
     curr = load_curr_conversion_data()
     knoed = load_knoedler_dataset()[[
         'pi_record_no',
+        'knoedler_number',
         'entry_date_year',
         'sale_date_year',
         'purch_amount',
