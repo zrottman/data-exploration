@@ -61,10 +61,7 @@ def load_knoedler_curr_conversion_dataset():
 
     # Load datasets
     curr = load_curr_conversion_data()
-    knoed = load_knoedler_dataset()
-
-    # Slice out columns we want
-    knoed = knoed[[
+    knoed = load_knoedler_dataset()[[
         'pi_record_no',
         'entry_date_year',
         'sale_date_year',
@@ -79,10 +76,26 @@ def load_knoedler_curr_conversion_dataset():
     ]]
 
     # Merge currency and knoedler datasets
-    solo_acquisitions = {'year':'entry_date_year', 'currency': 'purch_currency', 'conversion':'purch_conversion'}
-    shared_acquisitions = {'year':'entry_date_year', 'currency':'knoedpurch_curr', 'conversion':'knoedpurch_conversion'}
-    solo_sales = {'year':'sale_date_year', 'currency':'price_currency', 'conversion':'price_conversion'}
-    shared_sales = {'year':'sale_date_year', 'currency':'knoedshare_curr', 'conversion':'knoedshare_conversion'}
+    solo_acquisitions = {
+        'year':'entry_date_year', 
+        'currency': 'purch_currency', 
+        'conversion':'purch_conversion'
+    }
+    shared_acquisitions = {
+        'year':'entry_date_year', 
+        'currency':'knoedpurch_curr', 
+        'conversion':'knoedpurch_conversion'
+    }
+    solo_sales = {
+        'year':'sale_date_year', 
+        'currency':'price_currency', 
+        'conversion':'price_conversion'
+    }
+    shared_sales = {
+        'year':'sale_date_year', 
+        'currency':'knoedshare_curr', 
+        'conversion':'knoedshare_conversion'
+    }
 
     transaction_types = [solo_acquisitions, shared_acquisitions, solo_sales, shared_sales]
 
