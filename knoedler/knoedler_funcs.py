@@ -67,12 +67,16 @@ def load_knoedler_curr_conversion_dataset():
         'sale_date_year',
         'purch_amount',
         'purch_currency',
+        'purch_note',
         'knoedpurch_amt',
         'knoedpurch_curr',
+        'knoedpurch_note',
         'price_amount',
         'price_currency',
+        'price_note',
         'knoedshare_amt',
-        'knoedshare_curr'
+        'knoedshare_curr',
+        'knoedshare_note'
     ]]
 
     # Merge currency and knoedler datasets
