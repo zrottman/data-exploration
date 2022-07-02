@@ -3,6 +3,9 @@ Functions to help with loading/cleaning of Knoedler
 and related dataset.
 """
 
+import pandas as pd
+import numpy as np
+
 def load_knoedler_dataset():
     """
     Returns cleaned and prepared Knoedler dataset.
@@ -75,57 +78,26 @@ def load_knoedler_curr_conversion_dataset():
         'knoedshare_curr'
     ]]
 
-    # Merge 1: Solo acquisitions
-    knoed = (
-        pd.merge(
-            left=knoed,
-            right=curr,
-            how='left',
-            left_on=['entry_date_year', 'purch_currency'],
-            right_on=['year','currency']
-        )
-        .drop(columns=['year', 'currency'])
-        .rename(columns={"USD-2015":"purch_conversion"})
-    )
+    # Merge currency and knoedler datasets
+    solo_acquisitions = {'year':'entry_date_year', 'currency': 'purch_currency', 'conversion':'purch_conversion'}
+    shared_acquisitions = {'year':'entry_date_year', 'currency':'knoedpurch_curr', 'conversion':'knoedpurch_conversion'}
+    solo_sales = {'year':'sale_date_year', 'currency':'price_currency', 'conversion':'price_conversion'}
+    shared_sales = {'year':'sale_date_year', 'currency':'knoedshare_curr', 'conversion':'knoedshare_conversion'}
 
-    # Merge 2: Shared acquisitions
-    knoed = (
-        pd.merge(
-            left=knoed,
-            right=curr,
-            how='left',
-            left_on=['entry_date_year', 'knoedpurch_curr'],
-            right_on=['year','currency']
-        )
-        .drop(columns=['year', 'currency'])
-        .rename(columns={"USD-2015":"knoedpurch_conversion"})
-    )
+    transaction_types = [solo_acquisitions, shared_acquisitions, solo_sales, shared_sales]
 
-    # Merge 3: Solo sales
-    knoed = (
-        pd.merge(
-            left=knoed,
-            right=curr,
-            how='left',
-            left_on=['sale_date_year', 'price_currency'],
-            right_on=['year','currency']
+    for transaction in transaction_types: # 1 merge for each transaction category
+        knoed = (
+            pd.merge(
+                left=knoed,
+                right=curr,
+                how='left',
+                left_on=[transaction['year'], transaction['currency']],
+                right_on=['year', 'currency']
+            )
+            .drop(columns=['year', 'currency'])
+            .rename(columns={"USD-2015":transaction['conversion']})
         )
-        .drop(columns=['year', 'currency'])
-        .rename(columns={"USD-2015":"price_conversion"})
-    )
-
-    # Merge 4: Shared sales
-    knoed = (
-        pd.merge(
-            left=knoed,
-            right=curr,
-            how='left',
-            left_on=['sale_date_year', 'knoedshare_curr'],
-            right_on=['year','currency']
-        )
-        .drop(columns=['year', 'currency'])
-        .rename(columns={"USD-2015":"knoedshare_conversion"})
-    )
 
 
     # Clean up inferred value columns
