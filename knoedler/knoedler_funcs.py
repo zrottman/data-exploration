@@ -61,24 +61,7 @@ def load_knoedler_curr_conversion_dataset():
 
     # Load datasets
     curr = load_curr_conversion_data()
-    knoed = load_knoedler_dataset()[[
-        'pi_record_no',
-        'knoedler_number',
-        'entry_date_year',
-        'sale_date_year',
-        'purch_amount',
-        'purch_currency',
-        'purch_note',
-        'knoedpurch_amt',
-        'knoedpurch_curr',
-        'knoedpurch_note',
-        'price_amount',
-        'price_currency',
-        'price_note',
-        'knoedshare_amt',
-        'knoedshare_curr',
-        'knoedshare_note'
-    ]]
+    knoed = load_knoedler_dataset()
 
     # Merge currency and knoedler datasets
     solo_acquisitions = {
