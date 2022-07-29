@@ -7,5 +7,8 @@ These are a series of Jupyter Notebooks that chronicle my excursions into variou
 ### Knoedler Stock Books
 A dataset produced by the Getty Research Institute comprised of the stock books of art dealer M. Knoedler & Co., active from 1872–1970.
 
+### LA Traffic Accidents
+Excursions into a dataset containing traffic accident data in Los Angeles from 2010–present.
+
 ### My Water Usage
 My ongoing attempt to stay on top of our water usage.
