@@ -6,6 +6,6 @@
 
 A search for traffic accident patterns based on when they appear.
 
-### 02: Locations
+## 02: Locations
 
-Traffic accident patterns based on where they occur. *Note: I've cleared two of three heatmaps from the output so that the notebook will render on GitHub.*
+Traffic accident patterns based on where they occur. *Note: To reduce filesize and ensure that samples of the maps are rendered, I've cleared all visualizations from notebook outputs and have inserted screenshots instead.*
