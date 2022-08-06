@@ -44,3 +44,4 @@ def add_data_point(meter=None, event=None, zone1='', zone2='', zone3='', zone4='
         filename = '../data/water-irrigation.csv'
         f = open(filename, 'a')
         f.write("{0},{1},{2},{3},{4}".format(date, zone1, zone2, zone3, zone4))
+        f.close()
