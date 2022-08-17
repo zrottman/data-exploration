@@ -5,7 +5,7 @@ These are a series of Jupyter Notebooks that chronicle my excursions into variou
 ## Datasets/Projects
 
 ### [Knoedler Stock Books](https://github.com/zrottman/data-exploration/tree/main/knoedler)
-A dataset produced by the Getty Research Institute comprised of the stock books of art dealer M. Knoedler & Co., active from 1872–1970.
+A dataset produced by the Getty Research Institute comprised of the stock books of art dealer M. Knoedler & Co., active from 1848–1970.
 
 ### [LA Traffic Accidents](https://github.com/zrottman/data-exploration/tree/main/LA_traffic_accidents)
 Excursions into a dataset containing traffic accident data in Los Angeles from 2010–present.
