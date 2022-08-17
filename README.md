@@ -4,11 +4,14 @@ These are a series of Jupyter Notebooks that chronicle my excursions into variou
 
 ## Datasets/Projects
 
-### Knoedler Stock Books
+### [Knoedler Stock Books](https://github.com/zrottman/data-exploration/tree/main/knoedler)
 A dataset produced by the Getty Research Institute comprised of the stock books of art dealer M. Knoedler & Co., active from 1872–1970.
 
-### LA Traffic Accidents
+### [LA Traffic Accidents](https://github.com/zrottman/data-exploration/tree/main/LA_traffic_accidents)
 Excursions into a dataset containing traffic accident data in Los Angeles from 2010–present.
 
-### My Water Usage
+### [Historical Baseball](https://github.com/zrottman/data-exploration/tree/main/baseball)
+Teaching myself more about baseball by crunching some numbers.
+
+### [My Water Usage](https://github.com/zrottman/data-exploration/tree/main/water)
 My ongoing attempt to stay on top of our water usage.
