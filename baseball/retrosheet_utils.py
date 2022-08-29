@@ -34,30 +34,97 @@ def parse_event_file_info(f):
     # Iterate through lines of retrosheet event file
     for line in lines:
 
+        # Prepare line for parsing
         line = line.strip().split(',')
 
-        line_type = line[0]   # We want lines whose first element is `id` or `info`
+        # Parse line
+#        record_type, record_labels, record_values = _parse_line()
 
-        if line_type == 'id': # Start of data for a new game
+        record_type = line[0]   # We want lines whose first element is `id` or `info`
+
+        # Parse 'id' record type
+        if record_type == 'id': # Start of data for a new game
 
             # Before building new game `record`, append previous game `record` to `records`
             if record:
                 records.append(record)
                 record = {}
             
-            record_label = line[0]        # `id` 
-            record_value = line[1]        # unique game identifier
+            record_label = line[0]
+            record_value = line[1]
         
-        elif line_type == 'info':
+        
+        # Parse 'info' record type
+        elif record_type == 'info':
 
             record_label = line[1]        # `info` category, i.e., `starttime`
             record_value = line[2]        # value accomanyying `info` category
 
-
+        
         # Add `id` or `info` key and value to `record` dict
         record[record_label] = record_value if record_value else None
     
     return records
+
+
+def _parse_line(line):
+    """
+    Helper function that parses line type
+
+    Parameters
+    ----------
+    line : array
+
+    Returns
+    -------
+    record_type : str
+        options:
+            `id`
+            `version`
+            `info`
+            `start`
+            `sub`
+            `play`
+            `badj`
+            `padj`
+            `ladj`
+            `radj`
+            `data`
+            `com`
+    record_labels : array (n,)
+        column names
+    record_values : array (n,)
+        row of values
+    """
+    
+    record_type = line[0]
+    
+    match record_type:
+        case 'id':
+            return None, None, None
+        case 'version':
+            return None, None, None
+        case 'info':
+            return None, None, None
+        case 'start':
+            return None, None, None
+        case 'sub':
+            return None, None, None
+        case 'play':
+            return None, None, None
+        case 'badj':
+            return None, None, None
+        case 'padj':
+            return None, None, None
+        case 'ladj':
+            return None, None, None
+        case 'radj':
+            return None, None, None
+        case 'data':
+            return None, None, None
+        case 'com':
+            return None, None, None
+
 
 def load_season_info(year):
     """
