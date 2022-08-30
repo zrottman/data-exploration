@@ -1,3 +1,6 @@
+
+
+
 """
 retrosheet_utils
     Contains functions to parse retrosheet datasets
@@ -5,13 +8,13 @@ retrosheet_utils
 
 import os
 
-def parse_event_file_info(f):
+def parse_event_file_info(path):
     """
     Parse the `info` record type of a retrosheet event file
 
     Parameters
     ----------
-    f : str, file path
+    path : str, file path
         Retrosheet event file to be read
 
 
@@ -24,111 +27,144 @@ def parse_event_file_info(f):
 
     """
 
-    file = open(f)
+    # Get file contents
+    file = open(path)
     lines = file.readlines()
     file.close()
 
-    record = {}               # initialize dict to store each `record`
-    records = []              # output list for each `record`
+    # Initialize output variables 
+    record = {}               # Dict to store each `record`
+    records = []              # Output list for all `record` dicts
 
     # Iterate through lines of retrosheet event file
     for line in lines:
 
         # Prepare line for parsing
-        line = line.strip().split(',')
+        line = _prepare_line(line)
+        
+        # Get record type
+        record_type = _get_record_type(line)
 
-        # Parse line
-#        record_type, record_labels, record_values = _parse_line()
-
-        record_type = line[0]   # We want lines whose first element is `id` or `info`
-
-        # Parse 'id' record type
-        if record_type == 'id': # Start of data for a new game
-
-            # Before building new game `record`, append previous game `record` to `records`
+        # Parse lines of record_type `id` or `info`
+        if record_type == 'id':          # Start of data for a new game
             if record:
                 records.append(record)
                 record = {}
-            
-            record_label = line[0]
-            record_value = line[1]
+            record_label, record_value = _parse_id(line)
         
-        
-        # Parse 'info' record type
         elif record_type == 'info':
-
-            record_label = line[1]        # `info` category, i.e., `starttime`
-            record_value = line[2]        # value accomanyying `info` category
-
-        
+            record_label, record_value = _parse_info(line)
+    
         # Add `id` or `info` key and value to `record` dict
         record[record_label] = record_value if record_value else None
     
     return records
 
 
-def _parse_line(line):
+def parse_event_file_play(path):
     """
-    Helper function that parses line type
+    Parses `play` record type of a retrosheet event file
 
     Parameters
     ----------
-    line : array
+    path : str, file path
+        Retrosheet event file to be read
 
     Returns
     -------
-    record_type : str
-        options:
-            `id`
-            `version`
-            `info`
-            `start`
-            `sub`
-            `play`
-            `badj`
-            `padj`
-            `ladj`
-            `radj`
-            `data`
-            `com`
-    record_labels : array (n,)
-        column names
-    record_values : array (n,)
-        row of values
+    records : array of arrays
+        Each array contains the following features:
+            ###`id` : Unique game id
+            `inning` : Inning number
+            `hom_vis` : Desginates visiting team (0) or home (1)
+            `player_id` : Unique player id
+            ###`vs` : Opposing pitcher player id
+            `count` : Pitch count when event occurs
+            `pitches` : str, pitch sequence codes
+            `event` : str, event codes
+    columns : array
+        Array of column names as above
     """
+
+    # Get file contents
+    file = open(path)
+    lines = file.readlines()
+    file.close()
+
+    # Initialize output variables
+    columns = ['id', 'inning', 'hom_vis', 'player_id', 'count', 'pitches', 'event']
+    record = []
+    records = []
+
+    # Iterate through liens of retrosheet event file
+    for line in lines:
+
+        # Prepare line for parsing
+        line = _prepare_line(line)
+
+        # Get record type
+        record_type = _get_record_type(line)
+
+        # Parse lines of record_type `id` or `play`
+        if record_type == 'id':
+
+            game_id = line[1]
+
+        elif record_type == 'play':
+            
+            # Build record
+            record.append(game_id)
+            record.extend(line[1:])
+            
+            # Append `record` to `records`
+            records.append(record)
+
+            # Re-initialize `record`
+            record = []
     
-    record_type = line[0]
-    
-    match record_type:
-        case 'id':
-            return None, None, None
-        case 'version':
-            return None, None, None
-        case 'info':
-            return None, None, None
-        case 'start':
-            return None, None, None
-        case 'sub':
-            return None, None, None
-        case 'play':
-            return None, None, None
-        case 'badj':
-            return None, None, None
-        case 'padj':
-            return None, None, None
-        case 'ladj':
-            return None, None, None
-        case 'radj':
-            return None, None, None
-        case 'data':
-            return None, None, None
-        case 'com':
-            return None, None, None
+    return records, columns
+
+
+def _parse_id(line):
+    """
+    Parses record with record_type == `id`
+    """
+    return line[0], line[1]
+
+
+def _parse_info(line):
+    """
+    Parses record with record_type == `info`
+    """
+    return line[1], line[2]
+
+
+def _prepare_line(line):
+    """
+    Prepares line for parsing
+
+    Parameters
+    ----------
+    line : str
+
+    Returns
+    -------
+    line : array
+        Strips white space from `line` and splits on commas
+    """
+    return line.strip().split(',')
+
+
+def _get_record_type(line):
+    """
+    Returns first item from input list
+    """
+    return line[0]
 
 
 def load_season_info(year):
     """
-    Runs parse_event_file_info for all event files pertaining to a give season/year.
+    Runs parse_event_file for all event files pertaining to a give season/year.
 
     Parameters
     ----------
@@ -138,7 +174,7 @@ def load_season_info(year):
     Returns
     -------
         records : list of dicts
-            Concatenation of `records` list returned by parse_event_file_info()
+            Concatenation of `records` list returned by parse_event_file()
     """
     
     records = []
@@ -149,7 +185,7 @@ def load_season_info(year):
 
     for event_file in event_files:
         if event_file.startswith(str(year)):
-            records.extend(parse_event_file_info(path + event_file))
+            records.extend(parse_event_file(path + event_file))
 
     return records
 
