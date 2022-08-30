@@ -13,19 +13,28 @@ def add_data_point(meter=None, event=None, zone1='', zone2='', zone3='', zone4='
     combination of these are given, function will write to all relevant files.
 
     If no date is given, the function will automatically use today's date.
+
+    Parameters
+    ----------
+    date (str) : Date to be parsed by dateutil.parser.
+        If no value passed, defaults to today's date.
+    meter (float) : Meter reading
+    event (str) : Description of event that might impact water usage
+    zone1 (int) : Duration (minutes) of zone 1
+    zone2 (int) : Duration (minutes) of zone 2
+    zone3 (int) : Duration (minutes) of zone 3
+    zone4 (int) : Duration (minutes) of zone 4
+
+    Returns
+    -------
+    none
+
     """
-
-    from datetime import datetime
     
-    # Ensure we have a valid date to use
-    if date: # If a date was passed, valedate it
-        from dateutil import parser
-        date = parser.parse(date)
-        date = datetime.strftime(date, '%Y-%m-%d')
-    else: # Otherwise, use today's date
-        date = datetime.today().strftime('%Y-%m-%d')
+    # Parse date (if provided) or return today's date
+    parsed_date = _parse_date(date)
 
-    # Check for meter parameter and write to file
+        # Check for meter parameter and write to file
     if meter:
         filename = '../data/water.csv'
         f = open(filename, 'a')
@@ -45,3 +54,28 @@ def add_data_point(meter=None, event=None, zone1='', zone2='', zone3='', zone4='
         f = open(filename, 'a')
         f.write("{0},{1},{2},{3},{4}".format(date, zone1, zone2, zone3, zone4))
         f.close()
+
+def _parse_date(date):
+    """
+    Helper function that returns parsed date using dateutil.parser. If 
+    no value provided, function returns today's day.
+
+    Parameters
+    ----------
+    date (str) : Date to parse
+    
+    Returns
+    -------
+    parsed_date (datetime.datetime) : Parsed date
+    """
+
+    from datetime import datetime
+    from dateutil import parser
+
+    if date: # If a date was passed, valedate it
+        parsed_date = parser.parse(date)
+        parsed_date = datetime.strftime(parsed_date, '%Y-%m-%d')
+    else: # Otherwise, use today's date
+        parsed_date = datetime.today().strftime('%Y-%m-%d')
+
+    return parsed_date
