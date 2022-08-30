@@ -31,29 +31,55 @@ def add_data_point(meter=None, event=None, zone1='', zone2='', zone3='', zone4='
 
     """
     
-    # Parse date (if provided) or return today's date
     parsed_date = _parse_date(date)
-
-        # Check for meter parameter and write to file
+    
     if meter:
-        filename = '../data/water.csv'
-        f = open(filename, 'a')
-        f.write("{0},{1}".format(date, meter))
-        f.close()
-
-    # Check for event parameter and write to file
+        _update_meter(parsed_date, meter, path='../data/water.csv')
     if event:
-        filename = '../data/water-events.csv'
-        f = open(filename, 'a')
-        f.write("{0},{1}".format(date, event))
-        f.close()
-
-    # Check for zone parameters and write to file
+        _update_events(parsed_date, event, path='../data/water-events.csv')
     if zone1 or zone2 or zone3 or zone4:
-        filename = '../data/water-irrigation.csv'
-        f = open(filename, 'a')
-        f.write("{0},{1},{2},{3},{4}".format(date, zone1, zone2, zone3, zone4))
-        f.close()
+        _update_zones(parsed_date, zone1, zone2, zone3, zone4, path='../data/water-irrigation.csv')
+
+    return
+
+
+def _update_meter(parsed_date, meter, path):
+    """
+    Appends `parsed_date` and `meter` to data file at `path`
+
+    """
+    
+    f = open(path, 'a')
+    f.write("{0},{1}".format(parsed_date, meter))
+    f.close()
+
+    return
+
+
+def _update_events(parsed_date, event, path):
+    """
+    Appends `parsed_date` and `meter` to data file at `path`
+    """
+
+    f = open(path, 'a')
+    f.write("{0},{1}".format(parsed_date, event))
+    f.close()
+    
+    return
+
+
+def _update_zones(parsed_date, zone1, zone2, zone3, zone4, path):
+    """
+    Appends `parsed_date`, `zone1`, `zone2`, `zone3`, and `zone4` to file at
+    path.
+    """
+
+    f = open(path, 'a')
+    f.write("{0},{1},{2},{3},{4}".format(parsed_date, zone1, zone2, zone3, zone4))
+    f.close()
+
+    return
+
 
 def _parse_date(date):
     """
