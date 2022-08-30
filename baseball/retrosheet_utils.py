@@ -75,11 +75,11 @@ def parse_event_file_play(path):
     -------
     records : array of arrays
         Each array contains the following features:
-            ###`id` : Unique game id
+            `id` : Unique game id
             `inning` : Inning number
             `hom_vis` : Desginates visiting team (0) or home (1)
             `player_id` : Unique player id
-            ###`vs` : Opposing pitcher player id
+            `vs` : Opposing pitcher player id
             `count` : Pitch count when event occurs
             `pitches` : str, pitch sequence codes
             `event` : str, event codes
@@ -93,9 +93,12 @@ def parse_event_file_play(path):
     file.close()
 
     # Initialize output variables
-    columns = ['id', 'inning', 'hom_vis', 'player_id', 'count', 'pitches', 'event']
+    columns = ['id', 'inning', 'hom_vis', 'player_id', 'count', 'pitches', 'event', 'vs']
     record = []
     records = []
+
+    # Initialize current pitcher variable
+    cur_pitcher = [None, None]
 
     # Iterate through liens of retrosheet event file
     for line in lines:
@@ -112,19 +115,40 @@ def parse_event_file_play(path):
 
                 game_id = line[1]
 
+            case 'start' | 'sub': # Look for starting pitchers/relievers for `vs` col
+
+                if _is_pitcher(line):
+                    team, pitcher_id = _get_pitcher(line)
+                    cur_pitcher[team] = pitcher_id
+
             case 'play':
                
                 # Build record
                 record.append(game_id)
                 record.extend(line[1:])
+                record.append(cur_pitcher[(int(line[2]) + 1) % 2])
                 
                 # Append `record` to `records`
                 records.append(record)
 
                 # Re-initialize `record`
                 record = []
-        
+
     return records, columns
+
+
+def _is_pitcher(line):
+    """
+    Tests if current `start` or `sub` line is a pitcher
+    """
+    return line[-1] == '1'
+
+
+def _get_pitcher(line):
+    """
+    Gets relevant pitcher information
+    """
+    return int(line[3]), line[1]
 
 
 def _parse_id(line):
