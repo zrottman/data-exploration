@@ -1,6 +1,3 @@
-
-
-
 """
 retrosheet_utils
     Contains functions to parse retrosheet datasets
@@ -46,15 +43,16 @@ def parse_event_file_info(path):
         record_type = _get_record_type(line)
 
         # Parse lines of record_type `id` or `info`
-        if record_type == 'id':          # Start of data for a new game
-            if record:
-                records.append(record)
-                record = {}
-            record_label, record_value = _parse_id(line)
+        match record_type:
+            case 'id':          # Start of data for a new game
+                if record:
+                    records.append(record)
+                    record = {}
+                record_label, record_value = _parse_id(line)
+            
+            case 'info':
+                record_label, record_value = _parse_info(line)
         
-        elif record_type == 'info':
-            record_label, record_value = _parse_info(line)
-    
         # Add `id` or `info` key and value to `record` dict
         record[record_label] = record_value if record_value else None
     
@@ -106,22 +104,23 @@ def parse_event_file_play(path):
         record_type = _get_record_type(line)
 
         # Parse lines of record_type `id` or `play`
-        if record_type == 'id':
+        match record_type:
+            case 'id':
 
-            game_id = line[1]
+                game_id = line[1]
 
-        elif record_type == 'play':
-            
-            # Build record
-            record.append(game_id)
-            record.extend(line[1:])
-            
-            # Append `record` to `records`
-            records.append(record)
+            case 'play':
+               
+                # Build record
+                record.append(game_id)
+                record.extend(line[1:])
+                
+                # Append `record` to `records`
+                records.append(record)
 
-            # Re-initialize `record`
-            record = []
-    
+                # Re-initialize `record`
+                record = []
+        
     return records, columns
 
 
