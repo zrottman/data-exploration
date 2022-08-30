@@ -52,6 +52,9 @@ def parse_event_file_info(path):
             
             case 'info':
                 record_label, record_value = _parse_info(line)
+
+            case _:
+                continue
         
         # Add `id` or `info` key and value to `record` dict
         record[record_label] = record_value if record_value else None
