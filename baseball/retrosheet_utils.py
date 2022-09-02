@@ -1,6 +1,44 @@
 """
 retrosheet_utils
     Contains functions to parse retrosheet datasets
+
+    Functions
+    ---------
+    parse_event_file_info()
+        Parses `info` record type of retrosheet event file
+    
+    parse_event_file_play()
+        Parses `play` record type of retrosheet event file
+    
+    load_season_info()
+        Executes parse_event_file_info() for all event files for 
+        given year/season
+
+    load_season_play()
+        Executes parse_event_file_play() for all event files for
+        given year/season
+
+
+    Helper Functions
+    ----------------
+    _is_pitcher()
+        Tests if current `start` pr `sub` line is a pitcher
+    
+    _get_pitcher()
+        Returns relevant pitcher information
+
+    _parse_id()
+        Parses record with record_type == 'id'
+
+    _parse_info()
+        Parses record with record_type == 'info'
+
+    _prepare_line()
+        Prepares line for parsing
+
+    _get_record_type()
+        Returns record type
+
 """
 
 import os
@@ -190,7 +228,7 @@ def _get_record_type(line):
 
 def load_season_info(year):
     """
-    Runs parse_event_file for all event files pertaining to a give season/year.
+    Runs parse_event_file_info() for all event files pertaining to a give season/year.
 
     Parameters
     ----------
@@ -216,10 +254,32 @@ def load_season_info(year):
     return records
 
 
+def load_season_play(year):
+    """
+    Runs parse_event_file_play() for all event files pertaining to a given season/year/
 
+    Parameters
+    ----------
+        year : Year/season we want
 
-if __name__ == '__main__':
-    
-    records = parse_info('../data/retrosheet/reg_season/2017LAN.EVN')
-    for record in records:
-        print(record)
+    Returns
+    -------
+        all_records : array of arrays
+            Each array contains features/columns returned by parse_event_file_play()
+        columns: array
+            List of columns names returned by parase_event_file_play()
+    """
+
+    all_records = []
+    columns = []
+
+    # Get file list
+    path = '../data/retrosheet/reg_season/'
+    event_files = os.listdir(path)
+
+    for event_file in event_files:
+        if event_file.startswith(str(year)):
+            records, columns = parse_event_file_play(path + event_file)
+            all_records.extend(records)
+
+    return all_records, columns
