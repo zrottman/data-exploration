@@ -131,9 +131,10 @@ def parse_event_file_play(path):
     file.close()
 
     # Initialize output variables
-    columns = ['id', 'inning', 'hom_vis', 'player_id', 'count', 'pitches', 'event', 'vs']
+    columns = ['id', 'inning', 'hom_vis', 'player_id', 'count', 'pitches', 'event', 'vs', 'PH']
     record = []
     records = []
+    PH = 0
 
     # Initialize current pitcher variable
     cur_pitcher = [None, None]
@@ -153,11 +154,16 @@ def parse_event_file_play(path):
 
                 game_id = line[1]
 
-            case 'start' | 'sub': # Look for starting pitchers/relievers for `vs` col
-
+            case ('start' | 'sub'): 
+            
+                # Look for starting pitchers/relievers for `vs` col
                 if _is_pitcher(line):
                     team, pitcher_id = _get_pitcher(line)
                     cur_pitcher[team] = pitcher_id
+                
+                # Look for pinch hitter
+                if _is_PH(line):
+                    PH = 1
 
             case 'play':
                
@@ -165,12 +171,17 @@ def parse_event_file_play(path):
                 record.append(game_id)
                 record.extend(line[1:])
                 record.append(cur_pitcher[(int(line[2]) + 1) % 2])
+                record.append(PH)
                 
                 # Append `record` to `records`
                 records.append(record)
 
                 # Re-initialize `record`
                 record = []
+
+                # Re-initialize `PH` if a play has been successfully completed
+                if PH and line[-1] != 'NP':
+                    PH = 0
 
     return records, columns
 
@@ -225,6 +236,12 @@ def _get_record_type(line):
     """
     return line[0]
 
+
+def _is_PH(line):
+    """
+    Returns 1 if this is a pinch hitter
+    """
+    return line[-1] == '11'
 
 def load_season_info(year):
     """
