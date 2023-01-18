@@ -34,11 +34,11 @@ def add_data_point(meter=None, event=None, zone1='', zone2='', zone3='', zone4='
     parsed_date = _parse_date(date)
     
     if meter:
-        _update_meter(parsed_date, meter, path='../data/water.csv')
+        _update_meter(parsed_date, meter, path='data/water.csv')
     if event:
-        _update_events(parsed_date, event, path='../data/water-events.csv')
+        _update_events(parsed_date, event, path='data/water-events.csv')
     if zone1 or zone2 or zone3 or zone4:
-        _update_zones(parsed_date, zone1, zone2, zone3, zone4, path='../data/water-irrigation.csv')
+        _update_zones(parsed_date, zone1, zone2, zone3, zone4, path='data/water-irrigation.csv')
 
     return
 
