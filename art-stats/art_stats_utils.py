@@ -51,5 +51,16 @@ def prepare_dataset(df):
     df['years_posthumous'] = (
         np.where(df['living'] == 0, df['year_acquired'] - df['death_year'], np.nan)
     )
+
+    # Standardize `Gender`
+    gender_map = {
+        '(Male)': 'Male',
+        '(male)': 'Male',
+        '(Female)': 'Female',
+        '(female)': 'Female',
+        '(Non-Binary)': 'Non-Binary',
+        '(Non-binary)': 'Non-Binary'
+    }
+    df['Gender'] = df['Gender'].map(gender_map)
     
     return df
