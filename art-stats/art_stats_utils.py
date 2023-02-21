@@ -22,7 +22,8 @@ def prepare_dataset(df, remove_multiartist=True):
             '(Non-binary)': 'Non-Binary'
         }
 
-    df['Gender'] = df['Gender'].map(gender_map)
+        df['Gender'] = df['Gender'].map(gender_map)
+
     # `year_acquired`: Parsed version of `DateAcquired`
     df['year_acquired'] = pd.to_datetime(df['DateAcquired']).dt.year.astype(float)
 
