@@ -1,15 +1,28 @@
 import pandas as pd
 import numpy as np
 
-def prepare_dataset(df):
+def prepare_dataset(df, remove_multiartist=True):
     """
     A function that prepares the MoMA dataset.
     """
+    
+    # Drop records with multiple artists and standardize `Gender`
+    if remove_multiartist:
+        # Remove records with multiple artists according to `Gender` feature
+        multi_artist = df['Gender'].str.match(r'.+?\).+?\(').fillna(False)
+        df = df[~ multi_artist].copy()
 
-    # Remove records with multiple artists according to `Gender` feature
-    multi_artist = df['Gender'].str.match(r'.+?\).+?\(').fillna(False)
-    df = df[~ multi_artist].copy()
+        # Standardize `Gender`
+        gender_map = {
+            '(Male)': 'Male',
+            '(male)': 'Male',
+            '(Female)': 'Female',
+            '(female)': 'Female',
+            '(Non-Binary)': 'Non-Binary',
+            '(Non-binary)': 'Non-Binary'
+        }
 
+    df['Gender'] = df['Gender'].map(gender_map)
     # `year_acquired`: Parsed version of `DateAcquired`
     df['year_acquired'] = pd.to_datetime(df['DateAcquired']).dt.year.astype(float)
 
@@ -52,15 +65,5 @@ def prepare_dataset(df):
         np.where(df['living'] == 0, df['year_acquired'] - df['death_year'], np.nan)
     )
 
-    # Standardize `Gender`
-    gender_map = {
-        '(Male)': 'Male',
-        '(male)': 'Male',
-        '(Female)': 'Female',
-        '(female)': 'Female',
-        '(Non-Binary)': 'Non-Binary',
-        '(Non-binary)': 'Non-Binary'
-    }
-    df['Gender'] = df['Gender'].map(gender_map)
     
     return df
